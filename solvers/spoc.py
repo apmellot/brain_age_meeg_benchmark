@@ -25,9 +25,9 @@ class Solver(BaseSolver):
 
     stopping_criterion = SingleRunCriterion()
 
-    def set_objective(self, X, y):
+    def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
-        frequency_bands = {"all": (1, 35)}
+        #frequency_bands = {"all": (1, 35)}
         rank = self.rank
         scale = 1
         reg = 0
