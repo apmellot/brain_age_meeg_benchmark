@@ -25,13 +25,14 @@ class Objective(BaseObjective):
     # Bump it up if the benchmark depends on a new feature of benchopt.
     min_benchopt_version = "1.3"
 
-    def set_data(self, X, y):
+    def set_data(self, X, y, frequency_bands):
         # The keyword arguments of this function are the keys of the dictionary
         # returned by `Dataset.get_data`. This defines the benchmark's
         # API to pass data. This is customizable for each benchmark.
         X_train, X_test, y_train, y_test = train_test_split(X, y)
         self.X_train, self.y_train = X_train, y_train
         self.X_test, self.y_test = X_test, y_test
+        self.frequency_bands = frequency_bands
 
     def compute(self, model):
         # The arguments of this function are the outputs of the
@@ -62,4 +63,5 @@ class Objective(BaseObjective):
         return dict(
             X=self.X_train,
             y=self.y_train,
+            frequency_bands=self.frequency_bands
         )
