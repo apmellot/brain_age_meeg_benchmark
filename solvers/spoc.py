@@ -5,13 +5,12 @@ from benchopt import BaseSolver, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     import numpy as np
-
-    # import your reusable functions here
     import coffeine
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import RidgeCV
     from sklearn.feature_selection import VarianceThreshold
+    from benchopt.stopping_criterion import SingleRunCriterion
 
 
 # The benchmark solvers must be named `Solver` and
@@ -19,37 +18,21 @@ with safe_import_context() as import_ctx:
 class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
-    name = 'Source Power Comodulation (SPoC)'
-
-    # List of parameters for the solver. The benchmark will consider
-    # the cross product for each key in the dictionary.
-    # All parameters 'p' defined here are available as 'self.p'.
+    name = 'SPoC'
     parameters = {
-        'rank' : ['full'],
-        'bands' : [{"low": (0.1, 1),
-            "delta": (1, 4),
-            "theta": (4.0, 8.0),
-            "alpha": (8.0, 15.0),
-            "beta_low": (15.0, 26.0),
-            "beta_mid": (26.0, 35.0),
-            "beta_high": (35.0, 49)
-        }],
-        'reg' : [1.e-05],
-        'scale' : ['auto']
+        'rank' : [5,10,15,20]
     }
 
-    def set_objective(self, X, y):
-        # Define the information received by each solver from the objective.
-        # The arguments of this function are the results of the
-        # `Objective.get_objective`. This defines the benchmark's API for
-        # passing the objective to the solver.
-        # It is customizable for each benchmark.
-        self.X, self.y = X, y
+    stopping_criterion = SingleRunCriterion()
 
+    def set_objective(self, X, y):
+        # Pipeline parameters
+        frequency_bands = {"all": (1, 35)}
         rank = self.rank
-        scale = self.scale
-        reg = self.reg
-        frequency_bands = self.bands
+        scale = 1
+        reg = 0
+
+        self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
             names=list(frequency_bands),
@@ -63,11 +46,13 @@ class Solver(BaseSolver):
             RidgeCV(alphas=np.logspace(-5, 10, 100))
         )
 
-    def run(self):
+    def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
         # It runs the algorithm for a given a number of iterations `n_iter`.
-        
+        print('Begin to fit:')
         self.model.fit(self.X, self.y)
+        print('Fit done!')
+        # import ipdb; ipdb.set_trace()
 
     def get_result(self):
         # Return the result from one optimization run.
