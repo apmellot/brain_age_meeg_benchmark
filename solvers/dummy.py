@@ -4,12 +4,6 @@ from benchopt import BaseSolver, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    import numpy as np
-    import coffeine
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.linear_model import RidgeCV
-    from sklearn.feature_selection import VarianceThreshold
     from sklearn.dummy import DummyRegressor
     from benchopt.stopping_criterion import SingleRunCriterion
 
@@ -23,7 +17,7 @@ class Solver(BaseSolver):
 
     stopping_criterion = SingleRunCriterion()
 
-    def set_objective(self, X, y):
+    def set_objective(self, X, y, frequency_bands):
 
         self.X, self.y = X, y
 
