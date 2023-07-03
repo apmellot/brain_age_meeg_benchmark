@@ -4,8 +4,9 @@ from benchopt import BaseObjective, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    from sklearn.dummy import DummyClassifier
+    from sklearn.dummy import DummyRegressor
     from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_absolute_error
 
 
 # The benchmark objective must be named `Objective` and
@@ -36,21 +37,21 @@ class Objective(BaseObjective):
         # The arguments of this function are the outputs of the
         # `Solver.get_result`. This defines the benchmark's API to pass
         # solvers' result. This is customizable for each benchmark.
-
         score_train = model.score(self.X_train, self.y_train)
         score_test = model.score(self.X_test, self.y_test)
-
+        mae = mean_absolute_error(self.y_test, model.predict(self.X_test))
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.
         return dict(score_test=score_test,
                     value=-score_test,
                     score_train=score_train,
+                    mae=mae
                     )
 
     def get_one_solution(self):
         # Return one solution. The return value should be an object compatible
         # with `self.compute`. This is mainly for testing purposes.
-        return DummyClassifier().fit(self.X_train, self.y_train)
+        return DummyRegressor().fit(self.X_train, self.y_train)
 
     def get_objective(self):
         # Define the information to pass to each solver to run the benchmark.
