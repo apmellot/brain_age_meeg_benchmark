@@ -8,7 +8,6 @@ with safe_import_context() as import_ctx:
     import numpy as np
     import pandas as pd
     from pathlib import Path
-    from joblib import Parallel, delayed
     from benchmark_utils import get_X
 
 
@@ -38,7 +37,6 @@ class Dataset(BaseDataset):
         datatype = 'eeg'
         task = 'Rest'
         extension = '.set'
-        N_JOBS = 1
         # Read subjects info
         bids_root = Path('/storage/store3/data/ds004584')
         df_subjects = pd.read_csv(
@@ -46,11 +44,10 @@ class Dataset(BaseDataset):
         )
         df_subjects = df_subjects.set_index('participant_id')
         subjects_id = df_subjects.index
-        subjects_id = subjects_id[:20]
-        X = Parallel(n_jobs=N_JOBS)(
-            delayed(get_X)(bids_root, datatype, task, subject_id,
-                           frequency_bands, extension)
-            for subject_id in subjects_id)
+        subjects_id = subjects_id[:10]
+        for subject_id in subjects_id:
+            X.append(get_X(bids_root, datatype, task, subject_id,
+                           frequency_bands, extension))
         X = np.array(X)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
