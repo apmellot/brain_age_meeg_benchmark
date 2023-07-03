@@ -7,9 +7,9 @@ from benchopt import BaseDataset, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     import pandas as pd
-    import mne
-    import coffeine
-    from benchmark_utils import preprocessing
+    from pathlib import Path
+    from joblib import Parallel, delayed
+    from benchmark_utils import get_X
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
@@ -24,36 +24,37 @@ class Dataset(BaseDataset):
         # API to pass data. It is customizable for each benchmark.
         X = []
         y = []
-        frequency_bands = {"all": (1, 35)}
+        # frequency_bands = {
+        #     "delta": (1, 4),
+        #     "theta": (4.0, 8.0),
+        #     "alpha": (8.0, 15.0),
+        #     "beta_low": (15.0, 26.0),
+        #     "beta_mid": (26.0, 35.0)
+        # }
+        frequency_bands = {
+            "theta": (4.0, 8.0),
+            "alpha": (8.0, 15.0)
+        }
+        datatype = 'eeg'
+        task = 'Rest'
+        extension = '.set'
+        N_JOBS = 1
         # Read subjects info
+        bids_root = Path('/storage/store3/data/ds004584')
         df_subjects = pd.read_csv(
-            '/storage/store3/data/ds004584/participants.tsv', sep='\t'
+           bids_root / 'participants.tsv', sep='\t'
         )
         df_subjects = df_subjects.set_index('participant_id')
-        for i in range(1, 10):
-            # Read raw and preprocess
-            fname = f'/storage/store3/data/ds004584/sub-{i:03d}/eeg/sub-{i:03d}_task-Rest_eeg.set'
-            raw = mne.io.read_raw(fname, preload=False)
-            eeg_channels = raw.info.ch_names[:-1]
-            raw.pick(eeg_channels)
-            montage = mne.channels.make_standard_montage("standard_1005")
-            raw.set_montage(montage)
-            # raw_preprocess = preprocessing(raw, notch_freq=60, l_freq=1,
-            #                                h_freq=35, sfreq=200)
-            # # Store raw data in X
-            # X.append(raw_preprocess.get_data(start=0, stop=1000))
-            cov, _ = coffeine.compute_features(raw.crop(tmax=100),
-                                               features=('covs',),
-                                               n_fft=1024, n_overlap=512,
-                                               fs=raw.info['sfreq'], fmax=49,
-                                               frequency_bands=frequency_bands)
-            X.append(cov['covs'])
-            # Store age in y
-            y.append(df_subjects.loc[f'sub-{i:03d}']['AGE'])
+        subjects_id = df_subjects.index
+        subjects_id = subjects_id[:20]
+        X = Parallel(n_jobs=N_JOBS)(
+            delayed(get_X)(bids_root, datatype, task, subject_id,
+                           frequency_bands, extension)
+            for subject_id in subjects_id)
         X = np.array(X)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
                 enumerate(frequency_bands)})
-        y = np.array(y)
+        y = df_subjects.loc[subjects_id]['AGE'].values
         # The dictionary defines the keyword arguments for `Objective.set_data`
-        return dict(X=X_df, y=y)
+        return dict(X=X_df, y=y, frequency_bands=frequency_bands)
