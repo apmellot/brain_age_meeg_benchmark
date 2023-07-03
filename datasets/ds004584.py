@@ -49,7 +49,7 @@ class Dataset(BaseDataset):
                 X.append(get_X(bids_root, datatype, task, subject_id,
                                frequency_bands, extension))
             X = np.array(X)
-            np.save('ds004584_data.npy', X)
+            np.save('/data/ds004584_data.npy', X)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
                 enumerate(frequency_bands)})
