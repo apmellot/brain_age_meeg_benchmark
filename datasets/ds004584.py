@@ -7,6 +7,7 @@ from benchopt import BaseDataset, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     import pandas as pd
+    import os
     from pathlib import Path
     from benchmark_utils import get_X
 
@@ -23,17 +24,14 @@ class Dataset(BaseDataset):
         # API to pass data. It is customizable for each benchmark.
         X = []
         y = []
-        # frequency_bands = {
-        #     "delta": (1, 4),
-        #     "theta": (4.0, 8.0),
-        #     "alpha": (8.0, 15.0),
-        #     "beta_low": (15.0, 26.0),
-        #     "beta_mid": (26.0, 35.0)
-        # }
         frequency_bands = {
+            "delta": (1, 4),
             "theta": (4.0, 8.0),
-            "alpha": (8.0, 15.0)
+            "alpha": (8.0, 15.0),
+            "beta_low": (15.0, 26.0),
+            "beta_mid": (26.0, 35.0)
         }
+
         datatype = 'eeg'
         task = 'Rest'
         extension = '.set'
@@ -44,11 +42,14 @@ class Dataset(BaseDataset):
         )
         df_subjects = df_subjects.set_index('participant_id')
         subjects_id = df_subjects.index
-        subjects_id = subjects_id[:10]
-        for subject_id in subjects_id:
-            X.append(get_X(bids_root, datatype, task, subject_id,
-                           frequency_bands, extension))
-        X = np.array(X)
+        if os.path.exists('/data/ds004584_data.npy'):
+            X = np.load('/data/ds004584_data.npy')
+        else:
+            for subject_id in subjects_id:
+                X.append(get_X(bids_root, datatype, task, subject_id,
+                               frequency_bands, extension))
+            X = np.array(X)
+            np.save('ds004584_data.npy', X)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
                 enumerate(frequency_bands)})
