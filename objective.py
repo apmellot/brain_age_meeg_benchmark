@@ -6,6 +6,7 @@ from benchopt import BaseObjective, safe_import_context
 with safe_import_context() as import_ctx:
     from sklearn.dummy import DummyRegressor
     from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_absolute_error
 
 
 # The benchmark objective must be named `Objective` and
@@ -38,12 +39,13 @@ class Objective(BaseObjective):
         # solvers' result. This is customizable for each benchmark.
         score_train = model.score(self.X_train, self.y_train)
         score_test = model.score(self.X_test, self.y_test)
-
+        mae = mean_absolute_error(self.y_test, model.predict(self.X_test))
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.
         return dict(score_test=score_test,
                     value=-score_test,
                     score_train=score_train,
+                    mae=mae
                     )
 
     def get_one_solution(self):
