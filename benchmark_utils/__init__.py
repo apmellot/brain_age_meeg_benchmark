@@ -5,11 +5,10 @@ from benchopt import safe_import_context
 # the usual import syntax
 with safe_import_context() as import_ctx:
     import numpy as np
-    import mne
 
 
 def preprocessing(raw, notch_freq, l_freq, h_freq, sfreq):
-    raw_notch = raw.copy().load_data().notch(notch_freq)
+    raw_notch = raw.copy().load_data().notch_filter(notch_freq)
     raw_filter = raw_notch.copy().filter(l_freq, h_freq)
-    raw_resample = raw_filter.copy.().resample(sfreq)
+    raw_resample = raw_filter.copy().resample(sfreq)
     return raw_resample
