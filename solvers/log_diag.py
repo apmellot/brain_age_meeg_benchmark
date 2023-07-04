@@ -19,20 +19,17 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'log_diag'
-    parameters = {'rank': [10, 15, 20]}
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
-        rank = self.rank
 
         self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
             names=list(frequency_bands),
             method='log_diag',
-            projection_params=dict(n_compo=rank)
         )
         self.model = make_pipeline(
             filter_bank_transformer,
