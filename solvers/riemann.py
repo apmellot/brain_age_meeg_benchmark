@@ -21,14 +21,13 @@ class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
     name = 'riemann'
     parameters = {'rank': [0.2, 0.4, 0.6, 0.8, 0.99],
-                  'frequency_bands': ['low']
+                  'frequency_bands': ['low'],
+                  "estimator": ["ridge"]
                   #   ['low', 'delta', 'theta', 'alpha',
                   #    'beta_low', 'beta_mid',
                   #    'beta_high', 'alpha-theta',
                   #    'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
                   }
-
-    stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, n_channels):
         # Pipeline parameters
@@ -53,10 +52,17 @@ class Solver(BaseSolver):
             RidgeCV(alphas=np.logspace(-5, 10, 100))
         )
 
+    def get_next(self, n_iter):
+        if n_iter < 10:
+            return 10
+        else:
+            return min(int(n_iter*1.5), len(self.X))
+
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
         # It runs the algorithm for a given a number of iterations `n_iter`.
-        self.model.fit(self.X, self.y)
+        n_iter = min(n_iter + 10, len(self.X))
+        self.model.fit(self.X[:n_iter], self.y[:n_iter])
 
     def get_result(self):
         # Return the result from one optimization run.
