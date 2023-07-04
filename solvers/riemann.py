@@ -19,15 +19,15 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'riemann'
-    parameters = {'rank': [10, 15, 20], 'scale': [1, 2], 'reg': [0, 0.25, 0.5]}
+    parameters = {'rank': [10, 15, 20]}
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
         rank = self.rank
-        scale = self.scale
-        reg = self.reg
+        scale = 1
+        reg = 0
 
         self.X, self.y = X, y
 
