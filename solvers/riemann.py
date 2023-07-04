@@ -12,10 +12,6 @@ with safe_import_context() as import_ctx:
     from sklearn.feature_selection import VarianceThreshold
     from benchopt.stopping_criterion import SingleRunCriterion
 
-parameters = {'rank': [10, 15, 20],
-              'scale': [1, 2],
-              'reg': [0, 0.25, 0.5]}
-
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
@@ -23,14 +19,17 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'riemann'
+    pparameters = {'rank': [10, 15, 20],
+                   'scale': [1, 2],
+                   'reg': [0, 0.25, 0.5]}
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
-        rank = 20
-        scale = 1
-        reg = 0
+        rank = self.rank
+        scale = self.scale
+        reg = self.reg
 
         self.X, self.y = X, y
 
