@@ -5,8 +5,20 @@ from benchopt import safe_import_context
 # the usual import syntax
 with safe_import_context() as import_ctx:
     import numpy as np
+    from sklearn.base import BaseEstimator, TransformerMixin
     import mne
     import coffeine
+
+
+class IdentityTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, frequency_bands):
+        self.frequency_bands = frequency_bands
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        return X[self.frequency_bands]
 
 
 def preprocessing(raw, notch_freq, l_freq, h_freq, sfreq):

@@ -11,6 +11,7 @@ with safe_import_context() as import_ctx:
     from sklearn.linear_model import RidgeCV
     from sklearn.feature_selection import VarianceThreshold
     from benchopt.stopping_criterion import SingleRunCriterion
+    from benchmark_utils import IdentityTransformer
 
 
 # The benchmark solvers must be named `Solver` and
@@ -19,12 +20,18 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'log_diag'
+    parameters = {'frequency_bands': ['low']
+                  #   ['low', 'delta', 'theta', 'alpha',
+                  #    'beta_low', 'beta_mid',
+                  #    'beta_high', 'alpha-theta',
+                  #    'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
+                  }
 
     stopping_criterion = SingleRunCriterion()
 
-    def set_objective(self, X, y, frequency_bands):
+    def set_objective(self, X, y, n_channels):
         # Pipeline parameters
-
+        frequency_bands = self.frequency_bands.split('-')
         self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
@@ -32,6 +39,7 @@ class Solver(BaseSolver):
             method='log_diag',
         )
         self.model = make_pipeline(
+            IdentityTransformer(frequency_bands),
             filter_bank_transformer,
             VarianceThreshold(1e-10),
             StandardScaler(),
@@ -41,10 +49,7 @@ class Solver(BaseSolver):
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
         # It runs the algorithm for a given a number of iterations `n_iter`.
-        print('Begin to fit:')
         self.model.fit(self.X, self.y)
-        print('Fit done!')
-        # import ipdb; ipdb.set_trace()
 
     def get_result(self):
         # Return the result from one optimization run.

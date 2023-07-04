@@ -17,7 +17,7 @@ class Solver(BaseSolver):
 
     stopping_criterion = SingleRunCriterion()
 
-    def set_objective(self, X, y, frequency_bands):
+    def set_objective(self, X, y, n_channels):
 
         self.X, self.y = X, y
 
@@ -26,10 +26,7 @@ class Solver(BaseSolver):
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
         # It runs the algorithm for a given a number of iterations `n_iter`.
-        print('Begin to fit:')
         self.model.fit(self.X, self.y)
-        print('Fit done!')
-        # import ipdb; ipdb.set_trace()
 
     def get_result(self):
         # Return the result from one optimization run.
