@@ -15,6 +15,8 @@ class Objective(BaseObjective):
 
     # Name to select the objective in the CLI and to display the results.
     name = "brain_age"
+    install_cmd = 'conda'
+    requirements = ['scikit-learn']
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
