@@ -35,12 +35,7 @@ class Dataset(BaseDataset):
                                 "beta_mid": (26.0, 35.0)}
         X = []
         y = []
-        liste_bands = self.frequency_bands.split('-')
-        dict_bands_bis = {}
-        for band in liste_bands:
-            dict_bands_bis[str(band)] = frequency_bands_init[str(band)]
-
-        frequency_bands = dict_bands_bis
+        frequency_bands = self.frequency_bands.split('-')
 
         datatype = 'eeg'
         task = 'Rest'
@@ -62,7 +57,7 @@ class Dataset(BaseDataset):
             np.save('/data/ds004584_data.npy', X)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
-                enumerate(frequency_bands)})
+                enumerate(frequency_bands_init)})
         y = df_subjects.loc[subjects_id]['AGE'].values
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(X=X_df, y=y, frequency_bands=frequency_bands)

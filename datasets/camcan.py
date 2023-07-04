@@ -35,13 +35,7 @@ class Dataset(BaseDataset):
             "beta_mid": (26.0, 35.0),
             "beta_high": (35.0, 49)
         }
-
-        liste_bands = self.frequency_bands.split('-')
-        dict_bands_bis = {}
-        for band in liste_bands:
-            dict_bands_bis[str(band)] = frequency_bands_init[str(band)]
-
-        frequency_bands = dict_bands_bis
+        frequency_bands = self.frequency_bands.split('-')
 
         task = 'rest'
         # Read subjects info
@@ -63,7 +57,7 @@ class Dataset(BaseDataset):
         X = np.array(covs)
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
-                enumerate(frequency_bands)})
+                enumerate(frequency_bands_init)})
         y = df_subjects.loc[subjects]['age'].values
         # The dictionary defines the keyword arguments for `Objective.set_data`
-        return dict(X=X_df, y=y, frequency_bands=frequency_bands_init)
+        return dict(X=X_df, y=y, frequency_bands=frequency_bands)

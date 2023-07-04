@@ -16,6 +16,11 @@ class Dataset(BaseDataset):
 
     # Name to select the dataset in the CLI and to display the results.
     name = "tuab"
+    parameters = {'frequency_bands':
+                  ['low', 'delta', 'theta', 'alpha', 'beta_low', 'beta_mid',
+                   'beta_high', 'alpha-theta',
+                   'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
+                  }
 
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
@@ -30,6 +35,8 @@ class Dataset(BaseDataset):
             "beta_mid": (26.0, 35.0),
             "beta_high": (35.0, 49)
         }
+        frequency_bands = self.frequency_bands.split('-')
+
         task = 'rest'
         # Read subjects info
         bids_root = Path(
@@ -53,4 +60,4 @@ class Dataset(BaseDataset):
                 enumerate(frequency_bands_init)})
         y = df_subjects.loc[subjects]['age'].values
         # The dictionary defines the keyword arguments for `Objective.set_data`
-        return dict(X=X_df, y=y, frequency_bands=frequency_bands_init)
+        return dict(X=X_df, y=y, frequency_bands=frequency_bands)

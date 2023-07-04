@@ -25,7 +25,6 @@ class Solver(BaseSolver):
 
     def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
-        # frequency_bands = {"all": (1, 35)}
         rank = self.rank
         scale = 1
         reg = 0
@@ -33,7 +32,7 @@ class Solver(BaseSolver):
         self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
-            names=list(frequency_bands),
+            names=frequency_bands,
             method='spoc',
             projection_params=dict(scale=scale, n_compo=rank, reg=reg)
         )

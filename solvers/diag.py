@@ -28,7 +28,7 @@ class Solver(BaseSolver):
         self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
-            names=list(frequency_bands),
+            names=frequency_bands,
             method='diag',
         )
         self.model = make_pipeline(
