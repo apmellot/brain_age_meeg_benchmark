@@ -10,7 +10,6 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import RidgeCV
     from sklearn.feature_selection import VarianceThreshold
-    from benchopt.stopping_criterion import SingleRunCriterion
     from benchmark_utils import IdentityTransformer
 
 
