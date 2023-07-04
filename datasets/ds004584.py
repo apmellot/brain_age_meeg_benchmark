@@ -18,20 +18,28 @@ class Dataset(BaseDataset):
     # Name to select the dataset in the CLI and to display the results.
     name = "ds004584"
 
+    parameters = {'frequency_bands':
+                  [{"delta": (1, 4),
+                    "theta": (4.0, 8.0),
+                    "alpha": (8.0, 15.0),
+                    "beta_low": (15.0, 26.0),
+                    "beta_mid": (26.0, 35.0)},
+                   {"theta": (4.0, 8.0),
+                    "alpha": (8.0, 15.0),
+                    "beta_low": (15.0, 26.0),
+                    "beta_mid": (26.0, 35.0)},
+                   {"theta": (4.0, 8.0),
+                    "beta_mid": (26.0, 35.0)}
+                   ]
+                  }
+
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
         # to `Objective.set_data`. This defines the benchmark's
         # API to pass data. It is customizable for each benchmark.
         X = []
         y = []
-        frequency_bands = {
-            "delta": (1, 4),
-            "theta": (4.0, 8.0),
-            "alpha": (8.0, 15.0),
-            "beta_low": (15.0, 26.0),
-            "beta_mid": (26.0, 35.0)
-        }
-
+        frequency_bands = self.frequency_bands
         datatype = 'eeg'
         task = 'Rest'
         extension = '.set'

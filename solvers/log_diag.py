@@ -18,7 +18,7 @@ with safe_import_context() as import_ctx:
 class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
-    name = 'SPoC'
+    name = 'log_diag'
 
     parameters = {'rank': [10, 20, 30]}
 
@@ -35,7 +35,7 @@ class Solver(BaseSolver):
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
             names=list(frequency_bands),
-            method='spoc',
+            method='log_diag',
             projection_params=dict(scale=scale, n_compo=rank, reg=reg)
         )
         self.model = make_pipeline(
