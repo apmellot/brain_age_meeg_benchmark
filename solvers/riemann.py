@@ -12,6 +12,9 @@ with safe_import_context() as import_ctx:
     from sklearn.feature_selection import VarianceThreshold
     from benchopt.stopping_criterion import SingleRunCriterion
 
+parameters = {'rank': [10, 15, 20],
+              'scale': [1, 2],
+              'reg': [0, 0.25, 0.5]}
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
