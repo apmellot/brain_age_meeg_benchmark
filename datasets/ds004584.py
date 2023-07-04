@@ -19,26 +19,30 @@ class Dataset(BaseDataset):
     name = "ds004584"
 
     parameters = {'frequency_bands':
-                  ['delta-theta-alpha-beta_low-beta_mid',
-                   'delta-theta-beta_low',
-                   'alpha-beta_low-beta_mid']
+                  ['low', 'delta', 'theta', 'alpha', 'beta_low', 'beta_mid',
+                   'beta_high', 'alpha-theta',
+                   'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
                   }
 
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
         # to `Objective.set_data`. This defines the benchmark's
         # API to pass data. It is customizable for each benchmark.
-        dict_bands = {"delta": (1, 4),
-                      "theta": (4.0, 8.0),
-                      "alpha": (8.0, 15.0),
-                      "beta_low": (15.0, 26.0),
-                      "beta_mid": (26.0, 35.0)}
+        frequency_bands_init = {
+            "low": (0.1, 1),
+            "delta": (1, 4),
+            "theta": (4.0, 8.0),
+            "alpha": (8.0, 15.0),
+            "beta_low": (15.0, 26.0),
+            "beta_mid": (26.0, 35.0),
+            "beta_high": (35.0, 49)
+        }
         X = []
         y = []
         liste_bands = self.frequency_bands.split('-')
         dict_bands_bis = {}
         for band in liste_bands:
-            dict_bands_bis[str(band)] = dict_bands[str(band)]
+            dict_bands_bis[str(band)] = frequency_bands_init[str(band)]
 
         frequency_bands = dict_bands_bis
 
