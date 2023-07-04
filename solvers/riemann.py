@@ -19,9 +19,7 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'riemann'
-    parameters = {'rank': [10, 15, 20],
-                   'scale': [1, 2],
-                   'reg': [0, 0.25, 0.5]}
+    parameters = {'rank': [10, 15, 20], 'scale': [1, 2], 'reg': [0, 0.25, 0.5]}
 
     stopping_criterion = SingleRunCriterion()
 
