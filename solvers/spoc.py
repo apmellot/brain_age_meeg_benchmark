@@ -19,16 +19,13 @@ class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'SPoC'
-    parameters = {
-        'rank' : [5,10,15,20]
-    }
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, frequency_bands):
         # Pipeline parameters
-        #frequency_bands = {"all": (1, 35)}
-        rank = self.rank
+        # frequency_bands = {"all": (1, 35)}
+        rank = 20
         scale = 1
         reg = 0
 

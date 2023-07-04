@@ -4,6 +4,7 @@ from benchopt import safe_import_context
 # name `benchmark_utils`, and code defined inside will be importable using
 # the usual import syntax
 with safe_import_context() as import_ctx:
+    import numpy as np
     import mne
     import coffeine
 
@@ -35,3 +36,21 @@ def get_X(bids_root, datatype, task, subject_id, frequency_bands, extension):
                                        fs=raw.info['sfreq'], fmax=49,
                                        frequency_bands=frequency_bands)
     return cov['covs']
+
+
+def _generate_X_y(n_sources, A_list, powers, beta, sigma_n, sigma_y, rng):
+    n_matrices = len(A_list)
+    n_dim = A_list[0].shape[0]
+
+    # Generate covariances
+    Cs = np.zeros((n_matrices, n_dim, n_dim))
+    for i in range(n_matrices):
+        Cs[i, :n_sources, :n_sources] = np.diag(powers[i])  # set diag sources
+        N_i = sigma_n * rng.randn(n_dim - n_sources, n_dim - n_sources)
+        Cs[i, n_sources:, n_sources:] = N_i.dot(N_i.T)  # fill the noise block
+    X = np.array([a.dot(cs).dot(a.T) for a, cs in zip(A_list, Cs)])
+
+    # Generate y
+    y = np.log(powers).dot(beta)  # + 50
+    y += sigma_y * rng.randn(n_matrices)
+    return X, y
