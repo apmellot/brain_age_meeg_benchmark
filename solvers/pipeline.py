@@ -9,6 +9,7 @@ with safe_import_context() as import_ctx:
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import RidgeCV
+    from sklearn.kernel_ridge import KernelRidge
     from sklearn.feature_selection import VarianceThreshold
     from benchmark_utils.common import IdentityTransformer, IntermediateSolver
 
@@ -23,8 +24,8 @@ class Solver(IntermediateSolver):
     requirements = ['scikit-learn', 'coffeine']
     parameters = {'rank': [0.2, 0.4, 0.6, 0.8, 0.99],
                   'frequency_bands': ['low'],
-                  "estimator": ["ridge"],
-                  "method": ["riemann", "log_diag", "diag", "spoc"]
+                  "estimator": ["ridge", "kernel_ridge"],
+                  "method": ["riemann", "log_diag", "spoc"]
                   #   ['low', 'delta', 'theta', 'alpha',
                   #    'beta_low', 'beta_mid',
                   #    'beta_high', 'alpha-theta',
@@ -49,12 +50,18 @@ class Solver(IntermediateSolver):
             projection_params=projection_params
         )
 
+        ridge = None
+        if self.estimator == 'kernel_ridge':
+            ridge = KernelRidge()
+        else:
+            ridge = RidgeCV(alphas=np.logspace(-5, 10, 100))
+
         self.model = make_pipeline(
             IdentityTransformer(frequency_bands),
             filter_bank_transformer,
             VarianceThreshold(1e-10),
             StandardScaler(),
-            RidgeCV(alphas=np.logspace(-5, 10, 100))
+            ridge
         )
 
     def get_result(self):
