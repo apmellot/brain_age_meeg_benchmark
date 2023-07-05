@@ -30,6 +30,7 @@ class Dataset(BaseDataset):
             "beta_mid": (26.0, 35.0),
             "beta_high": (35.0, 49)
         }
+
         task = 'rest'
         # Read subjects info
         bids_root = Path(
@@ -48,9 +49,10 @@ class Dataset(BaseDataset):
         subjects = list(features.keys())
         covs = [features[sub]['covs'] for sub in subjects]
         X = np.array(covs)
+        n_channels = X.shape[2]
         X_df = pd.DataFrame(
             {band: list(X[:, i]) for i, band in
                 enumerate(frequency_bands_init)})
         y = df_subjects.loc[subjects]['age'].values
         # The dictionary defines the keyword arguments for `Objective.set_data`
-        return dict(X=X_df, y=y, frequency_bands=frequency_bands_init)
+        return dict(X=X_df, y=y, n_channels=n_channels)

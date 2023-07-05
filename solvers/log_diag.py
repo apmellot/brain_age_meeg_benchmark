@@ -19,11 +19,10 @@ with safe_import_context() as import_ctx:
 class Solver(IntermediateSolver):
 
     # Name to select the solver in the CLI and to display the results.
-    name = 'SPoC'
+    name = 'log_diag'
     install_cmd = 'conda'
     requirements = ['scikit-learn', 'pip:coffeine']
-    parameters = {'rank': [0.2, 0.4, 0.6, 0.8, 0.99],
-                  'frequency_bands': ['low']
+    parameters = {'frequency_bands': ['low']
                   #   ['low', 'delta', 'theta', 'alpha',
                   #    'beta_low', 'beta_mid',
                   #    'beta_high', 'alpha-theta',
@@ -33,16 +32,11 @@ class Solver(IntermediateSolver):
     def set_objective(self, X, y, n_channels):
         # Pipeline parameters
         frequency_bands = self.frequency_bands.split('-')
-        rank = int(self.rank * n_channels)
-        scale = 1
-        reg = 0
-
         self.X, self.y = X, y
 
         filter_bank_transformer = coffeine.make_filter_bank_transformer(
             names=frequency_bands,
-            method='spoc',
-            projection_params=dict(scale=scale, n_compo=rank, reg=reg)
+            method='log_diag',
         )
         self.model = make_pipeline(
             IdentityTransformer(frequency_bands),

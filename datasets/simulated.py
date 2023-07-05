@@ -8,7 +8,7 @@ with safe_import_context() as import_ctx:
     import numpy as np
     import pandas as pd
     from sklearn.utils import check_random_state
-    from benchmark_utils import _generate_X_y
+    from benchmark_utils.common import _generate_X_y
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
@@ -27,8 +27,14 @@ class Dataset(BaseDataset):
         # API to pass data. It is customizable for each benchmark.
 
         # Parameters for generating simulated data
-        frequency_bands = {
-            "simu_band": (0, 1)
+        frequency_bands_init = {
+            "low": (0.1, 1),
+            "delta": (1, 4),
+            "theta": (4.0, 8.0),
+            "alpha": (8.0, 15.0),
+            "beta_low": (15.0, 26.0),
+            "beta_mid": (26.0, 35.0),
+            "beta_high": (35.0, 49)
         }
         random_state = 42
         n_channels = 20
@@ -45,8 +51,8 @@ class Dataset(BaseDataset):
         X, y = _generate_X_y(n_channels, A_list, powers,
                              beta, sigma_n, sigma_y, rng)
         X_df = pd.DataFrame(
-            {band: list(X) for band in frequency_bands})
+            {band: list(X) for band in frequency_bands_init})
         y = np.array(y)
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
-        return dict(X=X_df, y=y, frequency_bands=frequency_bands)
+        return dict(X=X_df, y=y, n_channels=n_channels)

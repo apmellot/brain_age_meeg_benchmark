@@ -15,6 +15,8 @@ class Objective(BaseObjective):
 
     # Name to select the objective in the CLI and to display the results.
     name = "brain_age"
+    install_cmd = 'conda'
+    requirements = ['scikit-learn']
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -25,14 +27,14 @@ class Objective(BaseObjective):
     # Bump it up if the benchmark depends on a new feature of benchopt.
     min_benchopt_version = "1.3"
 
-    def set_data(self, X, y, frequency_bands):
+    def set_data(self, X, y, n_channels):
         # The keyword arguments of this function are the keys of the dictionary
         # returned by `Dataset.get_data`. This defines the benchmark's
         # API to pass data. This is customizable for each benchmark.
         X_train, X_test, y_train, y_test = train_test_split(X, y)
         self.X_train, self.y_train = X_train, y_train
         self.X_test, self.y_test = X_test, y_test
-        self.frequency_bands = frequency_bands
+        self.n_channels = n_channels
 
     def compute(self, model):
         # The arguments of this function are the outputs of the
@@ -63,5 +65,5 @@ class Objective(BaseObjective):
         return dict(
             X=self.X_train,
             y=self.y_train,
-            frequency_bands=self.frequency_bands
+            n_channels=self.n_channels
         )
