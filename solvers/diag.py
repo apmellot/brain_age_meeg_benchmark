@@ -21,11 +21,11 @@ class Solver(IntermediateSolver):
     name = 'diag'
     install_cmd = 'conda'
     requirements = ['scikit-learn', 'pip:coffeine']
-    parameters = {'frequency_bands': ['low', 'low-alpha']
-                  #   ['low', 'delta', 'theta', 'alpha',
-                  #    'beta_low', 'beta_mid',
-                  #    'beta_high', 'theta-alpha',
-                  #    'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
+    parameters = {'frequency_bands': [
+                      'low', 'delta', 'theta', 'alpha',
+                      'beta_low', 'beta_mid',
+                      'beta_high', 'alpha-theta',
+                      'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
                   }
 
     def set_objective(self, X, y, n_channels):
