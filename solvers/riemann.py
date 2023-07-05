@@ -1,4 +1,5 @@
 from benchopt import safe_import_context
+from benchmark_utils.intermediate_solver import IntermediateSolver
 
 # Protect the import with `safe_import_context()`. This allows:
 # - skipping import to speed up autocompletion in CLI.
@@ -10,7 +11,7 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import RidgeCV
     from sklearn.feature_selection import VarianceThreshold
-    from benchmark_utils.common import IdentityTransformer, IntermediateSolver
+    from benchmark_utils.common import IdentityTransformer
 
 
 # The benchmark solvers must be named `Solver` and
