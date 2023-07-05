@@ -19,6 +19,8 @@ class Solver(IntermediateSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'log_diag'
+    install_cmd = 'conda'
+    requirements = ['scikit-learn', 'coffeine']
     parameters = {'frequency_bands': ['low']
                   #   ['low', 'delta', 'theta', 'alpha',
                   #    'beta_low', 'beta_mid',
