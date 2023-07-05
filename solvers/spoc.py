@@ -20,7 +20,7 @@ class Solver(IntermediateSolver):
     # Name to select the solver in the CLI and to display the results.
     name = 'SPoC'
     install_cmd = 'conda'
-    requirements = ['scikit-learn', 'coffeine']
+    requirements = ['scikit-learn', 'pip:coffeine']
     parameters = {'rank': [0.2, 0.4, 0.6, 0.8, 0.99],
                   'frequency_bands': ['low']
                   #   ['low', 'delta', 'theta', 'alpha',

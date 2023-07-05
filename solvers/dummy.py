@@ -15,7 +15,7 @@ class Solver(IntermediateSolver):
     # Name to select the solver in the CLI and to display the results.
     name = 'dummy'
     install_cmd = 'conda'
-    requirements = ['scikit-learn', 'coffeine']
+    requirements = ['scikit-learn']
 
     def set_objective(self, X, y, n_channels):
 

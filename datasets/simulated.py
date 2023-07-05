@@ -8,7 +8,7 @@ with safe_import_context() as import_ctx:
     import numpy as np
     import pandas as pd
     from sklearn.utils import check_random_state
-    from benchmark_utils import _generate_X_y
+    from benchmark_utils.common import _generate_X_y
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
