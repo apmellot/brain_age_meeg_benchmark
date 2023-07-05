@@ -1,4 +1,4 @@
-from benchopt import BaseSolver, safe_import_context
+from benchopt import safe_import_context
 
 # Protect the import with `safe_import_context()`. This allows:
 # - skipping import to speed up autocompletion in CLI.
@@ -10,13 +10,12 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import RidgeCV
     from sklearn.feature_selection import VarianceThreshold
-    from benchopt.stopping_criterion import SingleRunCriterion
-    from benchmark_utils import IdentityTransformer
+    from benchmark_utils.common import IdentityTransformer, IntermediateSolver
 
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
-class Solver(BaseSolver):
+class Solver(IntermediateSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'SPoC'
@@ -29,8 +28,6 @@ class Solver(BaseSolver):
                   #    'beta_high', 'alpha-theta',
                   #    'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
                   }
-
-    stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, X, y, n_channels):
         # Pipeline parameters
@@ -53,11 +50,6 @@ class Solver(BaseSolver):
             StandardScaler(),
             RidgeCV(alphas=np.logspace(-5, 10, 100))
         )
-
-    def run(self, n_iter):
-        # This is the function that is called to evaluate the solver.
-        # It runs the algorithm for a given a number of iterations `n_iter`.
-        self.model.fit(self.X, self.y)
 
     def get_result(self):
         # Return the result from one optimization run.
