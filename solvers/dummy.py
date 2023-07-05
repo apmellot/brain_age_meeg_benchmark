@@ -1,11 +1,11 @@
 from benchopt import safe_import_context
+from benchmark_utils.intermediate_solver import IntermediateSolver
 
 # Protect the import with `safe_import_context()`. This allows:
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     from sklearn.dummy import DummyRegressor
-    from benchmark_utils.common import IntermediateSolver
 
 
 # The benchmark solvers must be named `Solver` and

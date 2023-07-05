@@ -5,7 +5,6 @@ from benchopt import safe_import_context
 # the usual import syntax
 with safe_import_context() as import_ctx:
     import numpy as np
-    from benchopt import BaseSolver
     from sklearn.base import BaseEstimator, TransformerMixin
     import mne
     import coffeine
@@ -67,17 +66,3 @@ def _generate_X_y(n_sources, A_list, powers, beta, sigma_n, sigma_y, rng):
     y = np.log(powers).dot(beta)  # + 50
     y += sigma_y * rng.randn(n_matrices)
     return X, y
-
-
-class IntermediateSolver(BaseSolver):
-    def get_next(self, n_iter):
-        if n_iter < 10:
-            return 10
-        else:
-            return min(int(n_iter*1.5), len(self.X))
-
-    def run(self, n_iter):
-        # This is the function that is called to evaluate the solver.
-        # It runs the algorithm for a given a number of iterations `n_iter`.
-        n_iter = min(n_iter + 10, len(self.X))
-        self.model.fit(self.X[:n_iter], self.y[:n_iter])
