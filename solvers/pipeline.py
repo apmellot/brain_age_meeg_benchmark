@@ -23,13 +23,13 @@ class Solver(IntermediateSolver):
     install_cmd = 'conda'
     requirements = ['scikit-learn', 'coffeine']
     parameters = {'rank': [0.2, 0.4, 0.6, 0.8, 0.99],
-                  'frequency_bands': ['low'],
                   "estimator": ["ridge"],
-                  "method": ["riemann", "log_diag", "spoc"]
-                  #   ['low', 'delta', 'theta', 'alpha',
-                  #    'beta_low', 'beta_mid',
-                  #    'beta_high', 'alpha-theta',
-                  #    'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
+                  "method": ["riemann", "log_diag", "spoc"],
+                  'frequency_bands': [
+                      'low', 'delta', 'theta', 'alpha',
+                      'beta_low', 'beta_mid',
+                      'beta_high', 'alpha-theta',
+                      'low-delta-theta-alpha-beta_low-beta_mid-beta_high']
                   }
 
     def set_objective(self, X, y, n_channels):
